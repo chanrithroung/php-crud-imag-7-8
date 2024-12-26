@@ -1,10 +1,20 @@
 <?php
-    // echo rand(0, 999999999);
-    // ;
+    include "image_uploader.php";
+    include "db_connect.php";
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $name = $_POST['name'];
+        $price = $_POST['price'];
         $file = $_FILES['thumbnail'];
-        pathinfo( "image.png", PATHINFO_EXTENSION );
-        $filename = rand(0, 9999999999).date("Y-m-d-H-i-s").'.'.pathinfo( $file['name'], PATHINFO_EXTENSION);
-    
-        move_uploaded_file($file['tmp_name'], 'uploads/'.$filename);
+        
+        $filename = uploads($file);
+
+        $con = connect_db();
+
+        $query = "INSERT INTO `products`(`name`, `price`, `thumbnail`) VALUES ('$name', '$price', '$filename')";
+
+        $con->query( query:$query );
+        
+        header('Location: index.php');
+
     }
